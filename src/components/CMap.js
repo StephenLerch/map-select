@@ -6,13 +6,17 @@ import * as constants from '../utils/index';
 function CMap(props) {
   const [featureName, setFeatureName] = useState('');
   const [selectedIds, setSelectedIds] = useState([]);
-  // const API_KEY = process.env.REACT_APP_API_KEY;
-  // const geoJSONUrl = `http://localhost:62843/api/maps/counties/v1/key/${API_KEY}/state/${stateValue}/`;
   const {centerLat, centerLon, features} = props;
   let layerRef = useRef(null);
   let mapRef = useRef(null);
 
   useEffect(() => {
+    // const container = L.DomUtil.get('map');
+    //
+    // if(container != null){
+    //   container._leaflet_id = null;
+    // }
+
     mapRef.current = L.map('map', {
       center: [centerLat, centerLon],
       layers: [
@@ -40,14 +44,17 @@ function CMap(props) {
         ...selectedIds.slice(index + 1)
       ]);
     };
-    let geoJson = new L.GeoJSON(features, {
+
+    layerRef.current = new L.GeoJSON(features, {
       clipTiles: true,
       onEachFeature: countyOnEachFeature,
       style: style,
       unique: feature => feature.id
     }).addTo(mapRef.current);
 
-    mapRef.current.fitBounds(geoJson.getBounds());
+    if (features) {
+      mapRef.current.fitBounds(layerRef.current.getBounds());
+    }
 
     function buildSummaryLabel(currentFeature){
       const featureName = currentFeature.properties.name || "Unnamed feature";
