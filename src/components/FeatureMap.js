@@ -1,9 +1,80 @@
-// import React, {useState} from 'react';
-// import L from './leaflet';
-// import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
-// import * as mapData from '../data/us-states-wi.json';
-// import './FeatureMap.css';
-//
+import React, {useEffect, useRef, useState} from 'react';
+import {select, geoPath, geoMercator, json} from 'd3';
+import useResizeObserver from './useResizeObserver';
+import './FeatureMap.css';
+
+export const FeatureMap = ({data, property}) => {
+    const wrapperRef = useRef();
+    const svgRef = useRef();
+    const dimensions = useResizeObserver(wrapperRef);
+    const [selectedCounty, setSelectedCounty] = useState(null);
+
+    useEffect(() => {
+        let svg = select(svgRef.current);
+        const projection = geoMercator();
+        const geoGenerator = geoPath().projection(projection);
+
+        svg.selectAll("path")
+            .data(data.features)
+            .enter()
+            .append("path")
+            // .attr("d",path)
+            .style("fill", "teal")
+            // .join("path")
+            // .attr("class", "county")
+            .attr("d", feature => geoGenerator(feature));
+
+
+
+
+        // let svg = select(svgRef.current);
+        // // const colorScale = scaleLinear()
+        // //     .domain([minProp, maxProp])
+        // //     .range(["#ccc", "red"]);
+        // const {height, width} = dimensions || wrapperRef.current.getBoundingClientRect();
+        // const projection = geoMercator()
+        //     .fitSize([width, height], selectedCounty || data)
+        //     .precision(100);
+        // const pathGenerator = geoPath().projection(projection);
+
+
+        // render each county
+        // svg
+        //     .selectAll(".county")
+        //     .data(data.features)
+        //     .join("path")
+        //     .on("click", feature => {
+        //         setSelectedCounty(selectedCounty === feature ? null : feature);
+        //     })
+        //     .attr("class", "county")
+        //     .transition()
+        //     // .attr("fill", feature => colorScale(feature.properties[property]))
+        //     .attr("d", feature => pathGenerator(feature));
+
+        // render text
+        // svg
+        //     .selectAll(".label")
+        //     .data([selectedCounty])
+        //     .join("text")
+        //     .attr("class", "label")
+        //     .text(
+        //         feature =>
+        //             feature &&
+        //             feature.properties.name +
+        //             ": " +
+        //             feature.properties[property].toLocaleString()
+        //     )
+        //     .attr("x", 10)
+        //     .attr("y", 25);
+    }, [data, dimensions, property, selectedCounty]);
+
+    return (
+        <div ref={wrapperRef} style={{ marginBottom: "2rem" }}>
+            <svg ref={svgRef}></svg>
+        </div>
+    );
+}
+
 // const LIGHTBLUE = '#89D1FE';
 // const DARKBLUE = '#1034A6';
 //
@@ -68,4 +139,4 @@
 //   );
 // }
 //
-// export default FeatureMap;
+

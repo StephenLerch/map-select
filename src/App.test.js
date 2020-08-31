@@ -1,8 +1,11 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import MemoryRouter from 'react-router-dom';
+import {render} from '@testing-library/react';
 import App from './App';
 
-test('renders App', () => {
-  const { getByText } = render(<App />);
-  expect(getByText('Mapping example')).toBeInTheDocument();
+describe('App component', () => {
+  test('renders App', () => {
+    const {getByText} = render(<App />, { wrapper: MemoryRouter });
+    expect(getByText('Mapping example')).toBeInTheDocument();
+  });
 });

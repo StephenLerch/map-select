@@ -2,3 +2,21 @@
   width: 100%;
   height: 100vh;
 }
+
+svg {
+  background: #eee;
+}
+
+.map-container {
+
+}
+
+.path {
+  fill: #ccc;
+  stroke: #fff;
+  stroke-width: .5px;
+}
+
+.path.active {
+  fill: pink;
+}
